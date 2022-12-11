@@ -10,4 +10,11 @@ class CustomUser extends Model
     use HasFactory;
 
     protected $table = 'custom_users';
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'name',
+        'email',
+        'password'
+    ];
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\User;
 use App\Models\encoding;
+use App\Models\customUser;
 
 class AuthController extends Controller
 {
@@ -45,5 +46,28 @@ class AuthController extends Controller
 
         return response()->json([
         ],400);
+    }
+
+    public function register(Request $request)
+    {
+
+        // Pobierz dane użytkownika z zapytania HTTP
+        $data = $request->validate([
+            'username' => 'required|string|max:255',
+            //'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
+
+        $userWithSameName = customUser::where('name', $data['username'])->first();
+        if ($userWithSameName) {
+            return response()->json(['errorMessage'=>'Użytkownik o takiej nazwie już istnieje!'],400);
+        }
+
+        $user = customUser::create([
+            'name' => $data['username'],
+            'password' => bcrypt($data['password']),
+        ]);
+        
+        return response()->json($user);
     }
 }

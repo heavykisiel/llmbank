@@ -13,14 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('custom_users');
+
         Schema::create('custom_users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('token')->default('');;
+            $table->string('name')->unique()->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('email')->unique()->nullable();;
+            $table->string('password')->nullable();
+            $table->string('token')->default('');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
 
         DB::table('custom_users')->insert([
