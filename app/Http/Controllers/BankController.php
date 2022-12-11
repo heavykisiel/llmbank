@@ -37,7 +37,8 @@ class BankController extends Controller
             'from' => 'required|exists:bank_account,accNumber',
             'to' => 'required|exists:bank_account,accNumber',
             'amount' => 'required|numeric|min:0.01',
-            'description' => 'string|max:255'
+            'description' => 'string|max:255',
+            'token' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -55,6 +56,11 @@ class BankController extends Controller
 
         //sprawdzenie czy konto należy do odpowieniego użytkownika
         $user = customUser::where('token', $token)->first();
+
+        if(!$user) { return response()->json([
+            'success' => false,
+            'errors' => 'Niepoprawny token',
+        ], 400); }
         
         $bankAccount = BankAccount::where('user_id', $user->id)
             ->where('accNUmber',$from)
