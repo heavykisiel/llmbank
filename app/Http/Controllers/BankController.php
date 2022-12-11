@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
 
@@ -16,7 +17,8 @@ class BankController extends Controller
 {
     //
 
-    public function bankNumbers (Request $request){
+    public function bankNumbers (Request $request)
+    {
         $token = $request['token'];
         
         $user = customUser::where('token', $token)->first();
@@ -94,5 +96,31 @@ class BankController extends Controller
                 'errMessage' => 'Próbujesz zrobić przelew z nie swojego konta.',
             ],400);
         }        
+    }
+
+    public function showTransactionHistory(Request $request){
+        $token = $request->input('token');
+        $accNumber = $request->input('accNumber');
+
+        $exist = DB::table('custom_users')
+            ->join('bank_account','custom_users.id', '=', 'bank_account.user_id')
+            ->where('custom_users.token',$token)
+            ->where('bank_account.accNumber',$accNumber)
+            ->select('bank_account.id')
+            ->first();
+
+        if ($exist){
+            $transactions = transaction::where('to_bank_id',$exist->id)->orWhere('from_bank_id',$exist->id)->get();
+
+            return response()->json($transactions, 200);
+
+        }else{
+            return response()->json([
+                'success' => false,
+                'errors' => 'Brak dostępu',
+            ], 400);
+        }
+
+
     }
 }
