@@ -22,7 +22,7 @@ class BankController extends Controller
             return response()->json($bankAccounts,200);
         } else
         {
-            return response()->json(['errorMessage'=>'prawidłowy token'],400);
+            return response()->json(['errorMessage'=>'nieprawidłowy token'],400);
         }
     }
 }
