@@ -34,8 +34,8 @@ class BankController extends Controller
     public function transfer(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'from' => 'required|exists:bank_account,id',
-            'to' => 'required|exists:bank_account,id',
+            'from' => 'required|exists:bank_account,accNumber',
+            'to' => 'required|exists:bank_account,accNumber',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'string|max:255'
         ]);
