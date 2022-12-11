@@ -17,14 +17,12 @@ class AuthController extends Controller
     {
         $login = $request->input('login');
         $password = $request->input('password');
-        
 
-        $hashedPassword = DB::table('custom_users')
-            ->select('password')
+        $User = DB::table('custom_users')
             ->where('name',$login)
-            ->get();
+            ->first();
 
-        $hashedPassword = $hashedPassword[0]->password;
+        $hashedPassword = $User->password;
 
         if (Hash::check($password, $hashedPassword)) {
 
@@ -35,6 +33,12 @@ class AuthController extends Controller
                 ->update(['token' => $guid]);
 
             return response()->json([
+                'User' => 
+                [ 
+                    'first_name' => $User->first_name,
+                    'last_name' => $User->last_name,
+                    'userName' => $User->name
+                 ],
                 'token' => $guid
             ],200);
         }
