@@ -87,7 +87,7 @@ class BankController extends Controller
             $bankAccount->decrement('balance',$amount);
             $toBank->increment('balance',$amount);
 
-            return response()->json(['succes' => true],200);
+            return response()->json(['succes' => true, 'newBalance' => $bankAccount->balance ],200);
         } else
         {
             return response()->json([
