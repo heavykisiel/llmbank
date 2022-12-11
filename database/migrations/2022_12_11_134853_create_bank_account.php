@@ -13,7 +13,6 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('bank_account');
         Schema::create('bank_account', function (Blueprint $table) {
             $table->id();
             $table->timestamp('created_at')->nullable();
@@ -25,9 +24,9 @@ return new class extends Migration
             $table->string('currency');
         });
         DB::table('bank_account')->insert([
-            ['balance' => 1000, 'user_id' => 1, 'accNumber' =>0000000001,  'accName' => 'Główne', 'currency' => 'PLN'],
-            ['balance' => 2000, 'user_id' => 2, 'accNumber' =>0000000002,  'accName' => 'Oszczędnościowe', 'currency' => 'USD'],
-            ['balance' => 3000, 'user_id' => 3, 'accNumber' =>0000000003,  'accName' => 'Walutowe', 'currency' => 'EURO'],
+            ['balance' => 1000, 'user_id' => 1, 'accNumber' =>1000000001,  'accName' => 'Główne', 'currency' => 'PLN'],
+            ['balance' => 2000, 'user_id' => 2, 'accNumber' =>1000000002,  'accName' => 'Oszczędnościowe', 'currency' => 'USD'],
+            ['balance' => 3000, 'user_id' => 3, 'accNumber' =>1000000003,  'accName' => 'Walutowe', 'currency' => 'EURO'],
         ]);
     }
 
