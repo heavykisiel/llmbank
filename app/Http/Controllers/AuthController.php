@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -102,5 +103,49 @@ class AuthController extends Controller
             ->json($users, 200); 
 
 
+    }
+
+    public function change(Request $request)
+    {
+        // Pobierz dane wejściowe od użytkownika
+        $input = $request->all();
+
+        $rules = [
+            'user_id' => 'required | exists:custom_users,id',
+            'new_first_name' => 'string|max:30',
+            'new_password' => 'string|min:8|confirmed',
+            'new_password_confirmation' => 'required_with:new_password | same:new_password',
+            'token' => 'required'
+        ];
+
+        $validator = Validator::make($input, $rules);
+
+        if ($validator->fails()) {
+            // Jeśli dane wejściowe są niepoprawne, zwróć błąd
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+
+
+        // Znajdź użytkownika na podstawie jego identyfikatora
+        $user = customUser::where('token',$input['token'])->where('permissions','>=',2)->first();
+        if(!$user){
+            return response()->json(['success' => false,'errors' => 'Niepoprawny token'],400);
+        }
+        
+        if ($request->filled('new_password')){
+            $user->password = Hash::make($input['new_password']);
+        }
+
+        if($request->filled('new_first_name')){
+                $user->first_name = $input['new_first_name'];
+            }
+        $user->save();
+
+            // Zwróć odpowiedź z sukcesem
+        return response()->json(['status' => 'success']);
+        
     }
 }

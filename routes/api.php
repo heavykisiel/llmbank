@@ -25,6 +25,7 @@ use App\Http\Controllers\BankController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/userList', [AuthController::class, 'userList']);
+Route::post('/change', [AuthController::class, 'change']);
 
 Route::post('/bankNumbers', [BankController::class, 'bankNumbers']);
 Route::post('/transfer', [BankController::class, 'transfer']);
