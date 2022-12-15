@@ -23,6 +23,13 @@ class AuthController extends Controller
             ->where('name',$login)
             ->first();
 
+        if ($User) {
+            return response()->json([
+                'success' => false,
+                'errors' => 'Niepoprawnde dane',
+            ], 400);
+        }
+
         $hashedPassword = $User->password;
 
         if (Hash::check($password, $hashedPassword)) {
@@ -69,5 +76,31 @@ class AuthController extends Controller
         ]);
         
         return response()->json($user);
+    }
+
+
+    public function userList(Request $request)
+    {
+        $token = $request->input('token');
+
+        $exist = DB::table('custom_users')
+            ->where('token',$token)
+            ->where('permissions','>=',2)
+            ->first();
+
+
+        if(!$exist){
+            return response()->json([
+                'success' => false,
+                'errors' => 'Brak uprawnień',
+            ], 400);
+        }
+
+        $users = customUser::get();
+
+        return response()
+            ->json($users, 200); 
+
+
     }
 }
