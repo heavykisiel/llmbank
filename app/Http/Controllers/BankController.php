@@ -140,8 +140,11 @@ class BankController extends Controller
             ], 400);
         }
 
+        $bank = DB::table('bank_account')->where('accNumber',$accNumber)->first();
         $transactions = transaction::where('to_bank_id',$accNumber)->orWhere('from_bank_id',$accNumber)->get();
-        return response()->json($transactions, 200);
+        return response()->json(
+            [ 'account' => $bank,
+                'history' => $transactions], 200);
 
     }
     
