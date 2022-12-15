@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,9 +17,10 @@ use App\Http\Controllers\BankController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -26,3 +28,5 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/bankNumbers', [BankController::class, 'bankNumbers']);
 Route::post('/transfer', [BankController::class, 'transfer']);
 Route::post('/history', [BankController::class, 'showTransactionHistory']);
+
+Route::post('/selectedHistory', [BankController::class, 'selectedHistory']);
