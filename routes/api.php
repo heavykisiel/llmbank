@@ -31,3 +31,4 @@ Route::post('/bankNumbers', [BankController::class, 'bankNumbers']);
 Route::post('/transfer', [BankController::class, 'transfer']);
 Route::post('/history', [BankController::class, 'showTransactionHistory']);
 Route::post('/selectedHistory', [BankController::class, 'selectedHistory']);
+Route::post('/infoBankAcc', [BankController::class, 'infoBankAcc']);

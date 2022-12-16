@@ -147,6 +147,32 @@ class BankController extends Controller
                 'history' => $transactions], 200);
 
     }
+
+    public function infoBankAcc(Request $request)
+    {
+        $token = $request->input('token');
+        $userName = $request->input('userName');
+
+        $exist = DB::table('custom_users')
+            ->where('token',$token)
+            ->where('permissions','>=',1)
+            ->first();
+        
+        if(!$exist){
+            return response()->json([
+                'success' => false,
+                'errors' => 'Brak uprawnień',
+            ], 400);
+        }
+
+        $accounts = DB::table('bank_account')
+            ->join('custom_users','custom_users.id', '=', 'bank_account.user_id')
+            ->where('custom_users.name',$userName)
+            ->select('bank_account.*')
+            ->get();
+
+        return response()->json($accounts, 200);
+    }
     
 
 
