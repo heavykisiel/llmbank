@@ -24,7 +24,7 @@ class AuthController extends Controller
             ->where('name',$login)
             ->first();
 
-        if ($User) {
+        if (!$User) {
             return response()->json([
                 'success' => false,
                 'errors' => 'Niepoprawnde dane',
