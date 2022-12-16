@@ -106,11 +106,11 @@ class BankController extends Controller
             ->join('bank_account','custom_users.id', '=', 'bank_account.user_id')
             ->where('custom_users.token',$token)
             ->where('bank_account.accNumber',$accNumber)
-            ->select('bank_account.id')
+            ->select('bank_account.accNumber')
             ->first();
 
         if ($exist){
-            $transactions = transaction::where('to_bank_id',$exist->id)->orWhere('from_bank_id',$exist->id)->get();
+            $transactions = transaction::where('to_bank_id',$exist->accNumber)->orWhere('from_bank_id',$exist->accNumber)->get();
 
             return response()->json($transactions, 200);
 
@@ -120,7 +120,34 @@ class BankController extends Controller
                 'errors' => 'Brak dostępu',
             ], 400);
         }
+    }
 
+
+    public function selectedHistory(Request $request)
+    {
+        $token = $request->input('token');
+        $accNumber = $request->input('accNumber');
+
+        $exist = DB::table('custom_users')
+            ->where('token',$token)
+            ->where('permissions','>=',1)
+            ->first();
+
+        if(!$exist){
+            return response()->json([
+                'success' => false,
+                'errors' => 'Brak uprawnień',
+            ], 400);
+        }
+
+        $bank = DB::table('bank_account')->where('accNumber',$accNumber)->first();
+        $transactions = transaction::where('to_bank_id',$accNumber)->orWhere('from_bank_id',$accNumber)->get();
+        return response()->json(
+            [ 'account' => $bank,
+                'history' => $transactions], 200);
 
     }
+    
+
+
 }
