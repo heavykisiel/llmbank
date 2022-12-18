@@ -27,6 +27,7 @@ return new class extends Migration
             ['balance' => 1000, 'user_id' => 1, 'accNumber' =>1000000001,  'accName' => 'Główne', 'currency' => 'PLN'],
             ['balance' => 2000, 'user_id' => 2, 'accNumber' =>1000000002,  'accName' => 'Oszczędnościowe', 'currency' => 'USD'],
             ['balance' => 3000, 'user_id' => 3, 'accNumber' =>1000000003,  'accName' => 'Walutowe', 'currency' => 'EURO'],
+            ['balance' => 4000, 'user_id' => 2, 'accNumber' =>1000000004,  'accName' => 'Główne', 'currency' => 'PLN'],
         ]);
     }
 
