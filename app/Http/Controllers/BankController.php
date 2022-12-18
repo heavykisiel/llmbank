@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 use App\Http\Controllers\Controller;
 
@@ -93,19 +94,20 @@ class BankController extends Controller
             $bankAccount->decrement('balance',$amount);
             
             $amount = floatval($amount);
+            
             if($bankAccount->currency == 'PLN')
             {
-                $kurs = floatval(getCurs($toBank->currency));
+                $kurs = floatval($this->getCurs($toBank->currency));
                 $ammountAfterCurrConversion = $amount/$kurs;
                 $bankAccount->decrement('balance',$amount);
 
                 $toBank->increment('balance',$ammountAfterCurrConversion);
             } else
             {
-                $kursFrom = floatval(getCurs($bankAccount->currency));
+                $kursFrom = floatval($this->getCurs($bankAccount->currency));
                 $kwotaNaPLN = $amount * $kursFrom;
 
-                $kursTo = floatval(getCurs($toBank->currency));
+                $kursTo = floatval($this->getCurs($toBank->currency));
                 $ammountAfterCurrConversion = $amount*$kursTo;
 
                 $toBank->increment('balance',$ammountAfterCurrConversion);
