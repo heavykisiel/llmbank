@@ -108,7 +108,7 @@ class BankController extends Controller
                 $kwotaNaPLN = $amount * $kursFrom;
 
                 $kursTo = floatval($this->getCurs($toBank->currency));
-                $ammountAfterCurrConversion = round($amount*$kursTo,2);
+                $ammountAfterCurrConversion = round($kwotaNaPLN*$kursTo,2);
 
                 $toBank->increment('balance',$ammountAfterCurrConversion);
             }
