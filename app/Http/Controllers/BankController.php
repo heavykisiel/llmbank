@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 use App\Http\Controllers\Controller;
 
 use App\Models\customUser;
 use App\Models\BankAccount;
 use App\Models\transaction;
+
+
 
 
 class BankController extends Controller
@@ -64,6 +67,7 @@ class BankController extends Controller
             'errors' => 'Niepoprawny token',
         ], 400); }
         
+        //fromBank
         $bankAccount = BankAccount::where('user_id', $user->id)
             ->where('accNUmber',$from)
             ->first();
@@ -87,8 +91,27 @@ class BankController extends Controller
             ]);
 
             $bankAccount->decrement('balance',$amount);
-            $toBank->increment('balance',$amount);
+            
+            $amount = floatval($amount);
+            if($bankAccount->currency == 'PLN')
+            {
+                $kurs = floatval(getCurs($toBank->currency));
+                $ammountAfterCurrConversion = $amount/$kurs;
+                $bankAccount->decrement('balance',$amount);
 
+                $toBank->increment('balance',$ammountAfterCurrConversion);
+            } else
+            {
+                $kursFrom = floatval(getCurs($bankAccount->currency));
+                $kwotaNaPLN = $amount * $kursFrom;
+
+                $kursTo = floatval(getCurs($toBank->currency));
+                $ammountAfterCurrConversion = $amount*$kursTo;
+
+                $toBank->increment('balance',$ammountAfterCurrConversion);
+            }
+
+            
             return response()->json(['succes' => true, 'newBalance' => $bankAccount->balance ],200);
         } else
         {
@@ -172,6 +195,17 @@ class BankController extends Controller
             ->get();
 
         return response()->json($accounts, 200);
+    }
+
+
+    private function getCurs(string $currency){
+        if ($currency == 'PLN')
+            return 1;
+
+        $url = 'http://api.nbp.pl/api/exchangerates/rates/a/'.$currency.'/';
+        $response = Http::get($url);
+
+        return $response->json('rates')[0]['mid'];
     }
     
 
