@@ -114,6 +114,7 @@ class AuthController extends Controller
         $rules = [
             'user_id' => 'required | exists:custom_users,id',
             'new_first_name' => 'string|max:30',
+            'new_last_name' => 'string|max:30',
             'new_password' => 'string|min:8|confirmed',
             'new_password_confirmation' => 'required_with:new_password | same:new_password',
             'token' => 'required'
@@ -140,6 +141,10 @@ class AuthController extends Controller
         if(!$user){
             return response()->json(['success' => false,'errors' => 'Nieznaleziono użytkownika'],400);
         }
+        
+        if ($request->filled('new_last_name')){
+            $user->last_name = $input['new_last_name'];
+        }
 
         if ($request->filled('new_password')){
             $user->password = Hash::make($input['new_password']);
@@ -152,6 +157,8 @@ class AuthController extends Controller
 
             // Zwróć odpowiedź z sukcesem
         return response()->json(['status' => 'success']);
-        
+
     }
+
+
 }
