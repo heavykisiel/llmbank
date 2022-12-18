@@ -131,11 +131,16 @@ class AuthController extends Controller
 
 
         // Znajdź użytkownika na podstawie jego identyfikatora
-        $user = customUser::where('token',$input['token'])->where('permissions','>=',2)->first();
-        if(!$user){
+        $admin = customUser::where('token',$input['token'])->where('permissions','>=',2)->first();
+        if(!$admin){
             return response()->json(['success' => false,'errors' => 'Niepoprawny token'],400);
         }
-        
+
+        $user = customUser::where('id',$input['user_id'])->first();
+        if(!$user){
+            return response()->json(['success' => false,'errors' => 'Nieznaleziono użytkownika'],400);
+        }
+
         if ($request->filled('new_password')){
             $user->password = Hash::make($input['new_password']);
         }
